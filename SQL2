@@ -79,3 +79,40 @@ Explanation:
 Another way to achieve this output is by using subqueries with conditional aggregation. 
 In this approach, we would use subqueries to get the contract numbers for VISA and MASTER cards separately, and then join them with the customerdata table.
 However, this approach can be more complex and may not be as straightforward as the first query provided.
+----------------------------------------------------------------------------------------------------------------
+SQL3
+---------------------------------------------------------------------------------------------------------------
+Use the same tables as in #2
+Please create with one query a resultset like this:
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Columns:    tid,            number of card contracts for this customer  (how many card configurations are present for this customer in in table customercards?)
+Row 1:      “69500000”,     2
+Row 2:      “69500001”,     1
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Comment: Please sort the result in the way, that the customers with the highest number of card contracts is on top	
+----------------------------------------------------------------------------------------------------------------------------
+
+We can achieve this result by using a SQL query with a GROUP BY clause and an aggregate function like COUNT.
+-------------
+Sql Query : 
+------------
+SELECT cd.tid,
+       COUNT(cc.id) AS "number of card contracts for this customer"
+  FROM customerdata cd
+       LEFT JOIN customercards cc ON cd.id = cc.customerdata_id
+GROUP BY cd.tid
+ORDER BY COUNT(cc.id) DESC;
+
+---------------------
+Explanation:
+---------------------
+1. We select the tid column from the customerdata table.
+2. We use LEFT JOIN to combine the customerdata and customercards tables based on the id and customerdata_id columns, respectively.
+3. We use COUNT(cc.id) to count the number of card contracts for each customer. This counts the number of rows in the customercards table
+   that have a matching customerdata_id.
+4. We use GROUP BY cd.tid to group the results by tid, so that the COUNT function operates on each group separately.
+Finally, we use ORDER BY COUNT(cc.id) DESC to sort the results in descending order based on the count of card contracts. 
+This will put the customers with the highest number of card contracts at the top.
+
+
