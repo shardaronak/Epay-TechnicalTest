@@ -1,0 +1,104 @@
+Please create a little subroutine, that will convert an integer (32 bit unsigned) into a “BCD” format with variable length
+(if it does not fit, your subroutine should abort the conversion)
+
+-	BCD background: 
+In a “binary compressed data” string, every number (0 – F) is stored in a “nibble” (4 Bit). 
+One byte (8 bits = unsigned char) can carry 2 numbers. 
+Example: integer value 98 would fit into one byte: unsigned char b=0x98; (or decimal = 152).
+
+! BCD strings can only contain numbers 0-9 and the characters A-F – otherwise it would not fit into a nibble.
+
+Function header:
+	unsigned int convert_int_to_bcd(unsigned char* destination_buffer,usigned int bufferlength, unsigned int value);
+
+Parameters:
+		
+1. [out] unsigned int = used buffer size in bytes  (0 in case of error or equal to bufferlength, if successful)
+2. [in] destination_buffer = please write the result into this buffer
+3. [in] bufferlength = length of buffer – please do not convert the value, if this buffer is too small
+The length of the buffer must be used completely – it indicates how many bytes should be  used for the new BCD string (prefill with zeros)
+4. [in] value = value to convert into BCD format
+
+Example value: value = 9873432, bufferlength = 4 (bytes)
+Example result: 4 (HEXDUMP): 09873432 // destination_buffer[0]==0x09; destination_buffer[1]==0x87;
+
+-------------------------------------------
+code
+----------------------------------------------
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+unsigned int convert_int_to_bcd(unsigned char* destination_buffer, unsigned int bufferlength, unsigned int value) 
+{
+    unsigned int count = 0;
+    unsigned int temp = value;
+
+    // Calculate the number of nibbles needed
+    do 
+    {
+        temp /= 10;
+        count++;
+    } while (temp > 0);
+
+    // Check if the buffer is large 
+    if (count > bufferlength * 2) 
+    {
+        return 0;  // Error: Buffer too small
+    }
+
+    // Initialize buffer with zeros
+    for (unsigned int i = 0; i < bufferlength; i++) 
+    {
+        destination_buffer[i] = 0;
+    }
+
+    // Convert the value to BCD
+    for (int i = count - 1; i >= 0; i--)
+    {
+        destination_buffer[(count - i - 1) / 2] |= ((value % 10) << ((i % 2) * 4));
+        value /= 10;
+    }
+
+    return bufferlength;  
+}
+
+int main() 
+{
+    unsigned char buffer[4] = {0};  // Initialize buffer with zeros
+    unsigned int result = convert_int_to_bcd(buffer, 4, 9873432);
+
+    if (result > 0) 
+    {
+       cout << "output (HEXDUMP): ";
+        for (int i = result - 1; i >= 0; i--) 
+        {
+            cout << setfill('0') << setw(2) << hex << static_cast<int>(buffer[i]) << " ";
+        }
+        cout << "\n";
+    } 
+    else 
+    {
+        cout << "Error: Buffer is too small" << "\n";
+    }
+
+    return 0;
+}
+
+
+------------------------
+Explanation:
+--------------------------------
+convert_int_to_bcd function:
+ 1. Takes an integer value, and converts it into BCD format.
+ 2. Stores the BCD result in the destination_buffer.
+ 3. Returns the number of bytes used in the buffer.
+In convert_int_to_bcd:
+1. It calculates the number of BCD digits needed to represent the value (count).
+2. Checks if there's enough space in the buffer for the result.
+3. Initializes the buffer with zeros.
+4. Converts the value to BCD and stores it in the buffer.
+main function:
+1.Initializes a buffer.
+2. Calls convert_int_to_bcd with the value 9873432.
+3. If successful, it prints the BCD result in hexadecimal format.
