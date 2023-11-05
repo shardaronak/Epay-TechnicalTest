@@ -34,4 +34,48 @@ Columns:  tid,        name of customerdata,  name of VISA card, visa contractnum
 -------------------------------------------------------------------------------------------------------------------------------------
 Row 1:   “69500000” , ”Martin”,             ”VISA”,             ”DEF456”,           ”MASTER”,            ”ABC123”
 Row 2:   “69500001”,  ”Christian”,          ”VISA”,              <null>,            ”MASTER”,            ”GHI789”
+-----------------------------------------------------------------------------------------------------------------------------------------
 
+Comment: You can use constants ‘1’ and ‘3’ for VISA and MASTER – no other constants are allowed
+Comment: please sort by TID
+
+-	Advanced: Can you identify a second possibility to create this output? If yes, just describe it with a few sentences – no query needed
+
+-------------
+Sql Query : 
+------------
+
+SELECT 
+    cd.tid,
+    cd.name AS "name of customerdata",
+    c1.name AS "name of VISA card",
+    cc1.contractnumber AS "visa contractnumber",
+    c2.name AS "name of Master card",
+    cc2.contractnumber AS "mastercard contractnumber"
+FROM 
+    customerdata cd
+LEFT JOIN 
+    customercards cc1 ON cd.id = cc1.customerdata_id AND cc1.card_id = 3
+LEFT JOIN 
+    card c1 ON c1.id = 3
+LEFT JOIN 
+    customercards cc2 ON cd.id = cc2.customerdata_id AND cc2.card_id = 1
+LEFT JOIN 
+    card c2 ON c2.id = 1
+ORDER BY 
+    cd.tid;
+
+---------------
+Explanation:
+----------------
+
+1. We select the relevant columns from the tables: tid and name from customerdata, and the card names and contract numbers from card and customercards.
+2. We use LEFT JOINs to join the tables. We join customerdata with customercards twice (once for VISA and once for MASTER cards) and then with card for each card type.
+3. For VISA card, we use a constant '3' for card_id as specified in comment.
+4. For MASTER card, we use a constant '1' for card_id as specified in comment.
+5. We use aliases (c1 and c2) for the card table to differentiate between VISA and MASTER cards.
+6. We use aliases (cc1 and cc2) for the customercards table to differentiate between VISA and MASTER card contracts.
+
+Another way to achieve this output is by using subqueries with conditional aggregation. 
+In this approach, we would use subqueries to get the contract numbers for VISA and MASTER cards separately, and then join them with the customerdata table.
+However, this approach can be more complex and may not be as straightforward as the first query provided.
