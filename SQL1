@@ -1,0 +1,53 @@
+# Describe the difference between “LEFT JOIN” and “INNER JOIN”
+
+	INNER JOIN: An INNER JOIN returns only includes the rows that have corresponding values in both tables being joined.
+  If there is no match, the row is not included in the result set.
+
+	LEFT JOIN: A LEFT JOIN returns all the records from the first table and the matched records from the right table.
+  If there is no match, NULL values are returned for columns from the right table.
+
+	In summary, the key difference is that an INNER JOIN only includes rows where there is a match in both tables, whereas a LEFT JOIN includes all rows from the left table, 
+  with NULLs in the columns from the right table if there is no match.
+
+#  Which of both “can” result in a larger result set, if the rest of the query is identical and why?
+
+	In general, a LEFT JOIN can result in a larger result set compared to an INNER JOIN, provided that there are unmatched records in the right table. 
+  This is because a LEFT JOIN includes all the records from the left table, even if there is no matching record in the right table. 
+  In such cases, the result set will include NULL values for the columns from the right table.
+
+ Let's consider an example:
+
+	Table A (left table):
+	ID  | Name
+	-----------
+	1   | John
+	2   | Jane
+	3   | Bob
+
+	Table B (right table):
+	ID  | Age
+	-----------
+	1   | 30
+	3   | 25
+	4   | 40
+
+	If you perform a LEFT JOIN on these tables using A.ID = B.ID, the result set will be:
+
+	A.ID | Name | B.ID | Age
+	-------------------------
+	1    | John | 1    | 30
+	2    | Jane | NULL | NULL
+	3    | Bob  | 3    | 25
+
+	As you can see, the LEFT JOIN includes all records from Table A, even though there is no matching record in Table B for ID 2.
+
+	Conversely, an INNER JOIN would only include the records where there is a matching ID in both tables. In this example, the INNER JOIN would only return:
+
+	A.ID | Name | B.ID | Age
+	-------------------------
+	1    | John | 1    | 30
+	3    | Bob  | 3    | 25
+
+
+
+	
