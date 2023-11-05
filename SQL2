@@ -1,0 +1,37 @@
+Given tables: (id is always the primary key of the table, strings are indicated by quotation marks)
+---------------------------------
+Tablename: customerdata
+---------------------------------
+Columns:     id,         tid,            name // (tid is just a special device identifier)
+----------------------------------------------------
+Row 1:        1,        ”69500000”,     ”Martin”
+Row 2:        2,        ”69500001”,     ”Christian”
+
+----------------------------------
+Tablename: card
+----------------------------------
+Columns:   id,            name
+---------------------------------------------
+Row 1:     1,           ”MASTER”
+Row 2:     3,           ”VISA”
+
+---------------------------------------
+Tablename: customercards
+----------------------------------------
+
+Columns:  id, customerdata_id,  card_id,     contractnumber (card_id refers to card.id, customerdata_id refers to customerdata.id)
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+Row 1:    1,  1,                1,            ”ABC123”
+Row 2:    2,  1,                3,            ”DEF456”
+Row 3:    3,  2,                1,            ”GHI789”
+
+-------------------------------------------------------------------------------------------------------------------------------------
+Create a SQL query, that will produce THIS output:
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Columns:  tid,        name of customerdata,  name of VISA card, visa contractnumber, name of Master card, mastercard contractnumber
+-------------------------------------------------------------------------------------------------------------------------------------
+Row 1:   “69500000” , ”Martin”,             ”VISA”,             ”DEF456”,           ”MASTER”,            ”ABC123”
+Row 2:   “69500001”,  ”Christian”,          ”VISA”,              <null>,            ”MASTER”,            ”GHI789”
+
